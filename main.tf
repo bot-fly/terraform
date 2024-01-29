@@ -21,6 +21,8 @@ resource "aws_s3_bucket" "bucket" {
   }
 }
 
+# Make bucket public
+
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.bucket.id
   policy = jsonencode(
@@ -53,6 +55,16 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
-  depends_on = [aws_s3_bucket_public_access_block.example]
+  depends_on = [aws_s3_bucket_public_access_block.bucket_access]
 }
 
+# Upload from the content directory
+
+resource "aws_s3_object" "file" {
+  for_each     = fileset(path.module, "content/**/*.{html,css}")
+  bucket       = aws_s3_bucket.bucket.id
+  key          = replace(each.value, "/^content//", "")
+  source       = each.value
+  content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
+  etag         = filemd5(each.value)
+}
