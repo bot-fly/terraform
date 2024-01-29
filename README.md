@@ -12,7 +12,7 @@ export AWS_ACCESS_KEY_ID="xxxxx..."
 export AWS_SECRET_ACCESS_KEY="xxxxx..."
 ```
 
-# Use
+## Use
 * `terraform init` to initialize the directory with hidden files (do not commit them)
 * `terraform plan` to prepare to create AWS resouces
 * `terraform apply` and then type `yes` to create
