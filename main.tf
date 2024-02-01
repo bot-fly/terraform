@@ -14,11 +14,9 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "webt-files"
+  count  = length(var.s3_bucket_names)
+  bucket = var.s3_bucket_names[count.index]
 
-  tags = {
-    Name = "Web files"
-  }
 }
 
 # Make bucket public
