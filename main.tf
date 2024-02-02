@@ -18,6 +18,11 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "source_dir" {
+  description = "The name of the local source directory"
+  type        = string
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.bucket_name
 
@@ -66,9 +71,9 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
 # Upload from the content directory
 
 resource "aws_s3_object" "file" {
-  for_each     = fileset(path.module, "content/**/*.{html,css}")
+  for_each     = fileset(path.module, "${var.source_dir}/**/*.{html,css}")
   bucket       = aws_s3_bucket.bucket.id
-  key          = replace(each.value, "/^content//", "")
+  key          = replace(each.value, "/^${var.source_dir}//", "")
   source       = each.value
   content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
   etag         = filemd5(each.value)
