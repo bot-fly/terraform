@@ -13,11 +13,16 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "bucket_name" {
+  description = "The name of the AWS S3 bucekt"
+  type        = string
+}
+
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "webt-files"
+  bucket        = var.bucket_name
 
   tags = {
-    Name = "Web files"
+    Name = var.bucket_name
   }
 }
 
