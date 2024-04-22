@@ -54,9 +54,9 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
 # Upload from the content directory
 
 resource "aws_s3_object" "file" {
-  for_each     = fileset(path.root, "../content/**/*.{html,css,jpg,jpeg,png}")
+  for_each     = fileset(path.root, "/**/*.{html,css,jpg,jpeg,png}")
   bucket       = aws_s3_bucket.bucket.id
-  key          = replace(each.value, "/^content//", "")
+  key          = each.value
   source       = each.value
   content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
   etag         = filemd5(each.value)

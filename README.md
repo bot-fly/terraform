@@ -16,9 +16,8 @@ export AWS_SECRET_ACCESS_KEY="xxxxx..."
 
 ## Use
 
-1. Put your web files in a directory called `content`. This name is required.
-2. At the same level, create a directory called (for example) `terraform`.
-3. In the Terraform directory, create a `main.tf` file calling the module thuly:
+
+1. In the directory with your web files, create a `main.tf` file calling the module, including a bucket name:
   ```
   terraform {
     required_providers {
@@ -28,16 +27,16 @@ export AWS_SECRET_ACCESS_KEY="xxxxx..."
       }
     }
 
-    required_version = ">= 1.2.0"
+    required_version = ">= 1.7.1"
   }
 
   module "bot-fly" {
-    source       = "../../bot-fly/terraform"
+    source       = "../../bot-fly/terraform" # or github URL
 
-    bucket_name = "weddingbucket1111"
+    bucket_name = "< xxxxxxx... >" # a unique bucket name
   }
    ``` 
-  4. Optionally, create a `outputs.tf` file, or, just add this to the `main.tf` file:
+2. Optionally, create a `outputs.tf` file, or, just add this to the `main.tf` file:
   ```
   output "website_url" {
     description = "Website URL (HTTPS)"
@@ -49,7 +48,8 @@ export AWS_SECRET_ACCESS_KEY="xxxxx..."
     value       = module.bot-fly.s3_url
   }
   ```
-  This code will output the location your web files are deployed to
+  This code will output the location your web files are deployed to.
+
 5. Deploy your files:
   * `terraform init` to initialize the directory with hidden files (do not commit them)
   * `terraform plan` to prepare to create AWS resouces
