@@ -1,11 +1,4 @@
 terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.16"
-    }
-  }
-
   required_version = ">= 1.2.0"
 }
 
@@ -14,10 +7,10 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "webt-files"
+  bucket        = var.bucket_name
 
   tags = {
-    Name = "Web files"
+    Name = var.bucket_name
   }
 }
 
@@ -61,9 +54,9 @@ resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
 # Upload from the content directory
 
 resource "aws_s3_object" "file" {
-  for_each     = fileset(path.module, "content/**/*.{html,css}")
+  for_each     = fileset(path.root, "/**/*.{html,css,jpg,jpeg,png}")
   bucket       = aws_s3_bucket.bucket.id
-  key          = replace(each.value, "/^content//", "")
+  key          = each.value
   source       = each.value
   content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), null)
   etag         = filemd5(each.value)
